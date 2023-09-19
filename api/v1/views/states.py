@@ -50,7 +50,7 @@ def delete_states(state_id):
 def post_states(state_id):
     """ create states based on json date """
     data = request.get_json()
-    if !data:
+    if data:
         abort(400, "Not a JSON")
     elif "name" not in data:
         abort(400, "Missing name")
