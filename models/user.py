@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ holds class User"""
 import models
+from hashlib import md5
 from models.base_model import BaseModel, Base
 from os import getenv
 import sqlalchemy
@@ -27,3 +28,9 @@ class User(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes user"""
         super().__init__(*args, **kwargs)
+
+    def __setattr__(self, __name, __value):
+        """Encrypt password using md5"""
+        if __name == "password":
+            __value = md5(__value.encode()).hexdigest()
+        return super().__setattr__(__name, __value)
