@@ -30,7 +30,7 @@ def get_states(state_id):
     for key, value in all_states.items():
         if f"State.{state_id}" == Key:
             return jsonify(value.to_dict())
-    abort (400)
+    abort(400)
 
 
 @app_views.route("states/<state_id>", methods=['DELETE'], strict_slashes=False)
@@ -43,7 +43,7 @@ def delete_states(state_id):
             storage.delete(value)
             storage.save()
             return {}
-    abort (400)
+    abort(400)
 
 
 @app_views.route("states/<state_id>", methods=['POST'], strict_slashes=False)
@@ -51,15 +51,15 @@ def post_states(state_id):
     """ create states based on json date """
     data = request.get_json()
     if !data:
-        abort (400, "Not a JSON")
+        abort(400, "Not a JSON")
     elif "name" not in data:
-        abort (400, "Missing name")
+        abort(400, "Missing name")
     else:
         created_state = State(**request.get_json)
         storage.new(created_state)
         storage.save()
-
     return created_state.to_dict(), 201
+
 
 @app_views.route("/states/<state_id>", methods=["PUT"], strict_slashes=False)
 def update_states(states_id):
@@ -68,13 +68,13 @@ def update_states(states_id):
     if obj:
         data = request.get_json()
         if isinstance(data, dict):
-            ignored =  ['id', 'state_id', 'created_at', 'updated_at']
+            ignored = ['id', 'state_id', 'created_at', 'updated_at']
             for key, value in obj.items():
                 if key not in ignored:
                     setattr(obj, key, value)
             obj.save()
             return jsonify(obj.to_dict()), 200
         else:
-            abort (400, "Not a JSON")
+            abort(400, "Not a JSON")
     else:
-        abort (404)
+        abort(404)
