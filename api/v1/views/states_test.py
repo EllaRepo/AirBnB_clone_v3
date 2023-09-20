@@ -75,6 +75,6 @@ def update_states(states_id):
             obj.save()
             return jsonify(obj.to_dict()), 200
         else:
-            abort(400, "Not a JSON")
+            abort(400, description = "Not a JSON")
     else:
         abort(404)
