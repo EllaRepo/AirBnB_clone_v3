@@ -55,6 +55,7 @@ def city_by_state(state_id):
 
 @app_views.route("cities/<city_id>", methods=["GET"], strict_slashes=False)
 def get_city(city_id):
+    """ get city based on city_id """
     city = storage.get(City, city_id)
     if city:
         return jsonify(city.to_dict())
@@ -63,6 +64,7 @@ def get_city(city_id):
 
 @app_views.route("cities/<city_id>", methods=["DELETE"], strict_slashes=False)
 def delete_city(city_id):
+    """ delete city based on city_id """
     city = storage.get(City, city_id)
     if city:
         storage.delete(city)
@@ -74,6 +76,7 @@ def delete_city(city_id):
 @app_views.route("states/<state_id>/cities", methods=["POST"],
                  strict_slashes=False)
 def post_states(state_id):
+    """ create new city based on state_id """
     data = request.jsonify()
     state = storage.get(State, state_id)
     if typ(data) != dict:
@@ -90,6 +93,7 @@ def post_states(state_id):
 
 @app_views.route("cities/<city_id>", methods=["PUT"], strict_slashes=False)
 def update_city(city_id):
+    """ update city based on city_id """
     city = storage.get(City, city_id)
     data = request.get_json()
     ignored_keys = ["id", "state_id", "created_at", "updated_at"]
