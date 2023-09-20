@@ -44,11 +44,12 @@ from models.state import State
 from flasgger.utils import swag_from
 
 
-@app_views.route("states/<state_id>/cities", methods=["GET"], strict_slashes=False)
+@app_views.route("states/<state_id>/cities", methods=["GET"],
+                 strict_slashes=False)
 def city_by_state(state_id):
     all_states = storage.get(State, state_id)
     if all_states:
-        return jsonify([ city.to_dict() for city in State.cities])
+        return jsonify([city.to_dict() for city in State.cities])
     abort(404)
 
 
@@ -67,10 +68,11 @@ def delete_city(city_id):
         storage.delete(city)
         storage.save()
         return jsonify({})
-    abort (404)
+    abort(404)
 
 
-@app_views.route("states/<state_id>/cities", methods=["POST"], strict_slashes=False)
+@app_views.route("states/<state_id>/cities", methods=["POST"],
+                 strict_slashes=False)
 def post_states(state_id):
     data = request.jsonify()
     state = storage.get(State, state_id)
@@ -78,7 +80,7 @@ def post_states(state_id):
         abort(400, description="Not a JSON")
     if "name" not in data:
         abort(400, description="Missing name")
-    if !state:
+    if state is None:
         abort(404)
     new_city = City(**data)
     new_city.state_id = state_id
@@ -91,7 +93,7 @@ def update_city(city_id):
     city = storage.get(City, city_id)
     data = request.get_json()
     ignored_keys = ["id", "state_id", "created_at", "updated_at"]
-    if !city:
+    if city is None:
         abort(404)
     if type(data) != dict:
         abort(400, description="Not a JSON")
