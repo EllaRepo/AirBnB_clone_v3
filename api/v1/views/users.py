@@ -13,7 +13,7 @@ def users():
     users = storage.all(User)
     if users is None:
         abort(404)
-    return jsonify([user.to_dict() for user in users])
+    return jsonify([user.to_dict() for user in users.values()])
 
 
 @app_views.route("/users/<user_id>", methods=["GET"],
