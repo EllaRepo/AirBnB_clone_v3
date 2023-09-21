@@ -36,66 +36,65 @@ Update the Amenity object with all key-value pairs of the dictionary
 Ignore keys: id, created_at and updated_at
 Returns the Amenity object with the status code 200
 """
+from flask import Flask, jsonify, abort, request, Response
 from api.v1.views import app_views
-from models.state import State
-from models.city import City
-from flask import request, jsonify, abort, make_response
 from models import storage
+from models.city import City
+from models.state import State
 
 
-@app_views.route("/states/<state_id>/cities", methods=["GET"],
+@app_views.route("states/<state_id>/cities", methods=["GET"],
                  strict_slashes=False)
 def city_by_state(state_id):
-    """ get city of a specific state_id """
     all_states = storage.get(State, state_id)
-    if all_states is None:
-        abort(404)
-    return jsonify([city.to_dict() for city in State.cities])
+    if all_states:
+        return jsonify([city.to_dict() for city in State.cities])
+    abort(404)
 
 
-@app_views.route("/cities/<city_id>", methods=['GET'], strict_slashes=False)
+@app_views.route("cities/<city_id>", methods=["GET"], strict_slashes=False)
 def get_city_with_id(city_id):
-    """Retrieves a city object with city id"""
-    city = storage.get("City", city_id)
+    """ get city based on city_id """
+    city = storage.get(City, city_id)
     if city:
         return jsonify(city.to_dict())
     abort(404)
 
 
-@app_views.route("/cities/<city_id>", methods=['DELETE'],
-                 strict_slashes=False)
-def delete_state(city_id):
-    """Deletes a State object with state_id"""
-    city = storage.get("City", city_id)
+@app_views.route("cities/<city_id>", methods=["DELETE"], strict_slashes=False)
+def delete_city(city_id):
+    """ delete city based on city_id """
+    city = storage.get(City, city_id)
     if city:
-        city.delete()
+        storage.delete(city)
         storage.save()
-        return make_response(jsonify({}), 200)
+        return jsonify({})
     abort(404)
 
 
-@app_views.route("/states/<state_id>/cities", methods=['POST'],
+@app_views.route("states/<state_id>/cities", methods=["POST"],
                  strict_slashes=False)
-def post_city():
-    """Creates a cities"""
-    new_city = request.get_json()
+def post_states(state_id):
+    """ create new city based on state_id """
+    data = request.jsonify()
     state = storage.get(State, state_id)
-    if not new_city:
-        abort(400, "Not a JSON")
-    if "name" not in new_city:
-        abort(400, "Missing name")
+    if typ(data) != dict:
+        abort(400, description="Not a JSON")
+    if "name" not in data:
+        abort(400, description="Missing name")
     if state is None:
         abort(404)
-    city = City(**new_city)
-    storage.new(city)
-    city.state_id = state_id
+    new_city = City(**data)
+
+    storage.new(new_city)
+    new_city.state_id = state_id
     storage.save()
-    return make_response(jsonify(city.to_dict()), 201)
+    return jsonify(new_city.to_dict()), 201
 
 
-@app_views.route("/cities/<city_id>", methods=['PUT'], strict_slashes=False)
-def put_state(state_id):
-    """Updates a State object"""
+@app_views.route("cities/<city_id>", methods=["PUT"], strict_slashes=False)
+def update_city(city_id):
+    """ update city based on city_id """
     city = storage.get(City, city_id)
     data = request.get_json()
     ignored_keys = ["id", "state_id", "created_at", "updated_at"]
@@ -107,4 +106,4 @@ def put_state(state_id):
         if key not in ignored_keys:
             setattr(city, key, value)
     storage.save()
-    return make_response(jsonify(city.to_dict()), 200)
+    return jsonify(city.to_dict()), 200
