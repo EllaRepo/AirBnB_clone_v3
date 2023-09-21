@@ -16,11 +16,6 @@ def cities_by_state(state_id):
         abort(404)
     return jsonify([city.to_dict() for city in state.cities])
 
-@app_views.route("/cities". methods=["GET"], strict_slashes=False)
-def cities():
-    city = storage.get(City)
-    return jsonify(city.to_dict())
-
 
 @app_views.route("/cities/<city_id>", methods=["GET"],
                  strict_slashes=False)
