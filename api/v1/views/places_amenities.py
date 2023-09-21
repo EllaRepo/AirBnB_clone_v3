@@ -21,7 +21,7 @@ def amenities_from_place(place_id):
         return jsonify([amenity.to_dict() for amenity in place.amenities])
     else:
         return jsonify([
-            storage.get(Amenity, _id).to_dict() for _id in place.amenity_ids
+            storage.get("Amenity", _id).to_dict() for _id in place.amenity_ids
         ])
 
 
