@@ -10,7 +10,7 @@ from models import storage
                  strict_slashes=False)
 def users():
     """return all users """
-    users = storage.all(User).values()
+    users = storage.all(User)
     if users is None:
         abort(404)
     return jsonify([user.to_dict() for user in users])
@@ -42,7 +42,6 @@ def delete_user(user_id):
                  strict_slashes=False)
 def insert_user():
     """insert new user for a given user id"""
-
     data = request.get_json()
     if type(data) != dict:
         abort(400, description="Not a JSON")
