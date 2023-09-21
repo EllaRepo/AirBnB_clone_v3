@@ -5,7 +5,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models import storage
 from os import getenv
-from flask import jsonify, abort, make_response, request
+from flask import jsonify, abort, make_response
 
 mode = getenv("HBNB_TYPE_STORAGE")
 
