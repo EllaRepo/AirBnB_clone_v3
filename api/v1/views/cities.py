@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """Implementation of RESTful api for cities"""
 from api.v1.views import app_views
-from models.city import City
 from models.state import State
+from models.city import City
 from flask import request, jsonify, abort, make_response
 from models import storage
 
@@ -14,7 +14,7 @@ def cities_by_state(state_id):
     state = storage.get(State, state_id)
     if state is None:
         abort(404)
-    return make_response(jsonify([city.to_dict() for city in state.cities]))
+    return jsonify([city.to_dict() for city in state.cities])
 
 
 @app_views.route("/cities/<city_id>", methods=["GET"],
@@ -24,7 +24,7 @@ def show_city(city_id):
     city = storage.get(City, city_id)
     if city is None:
         abort(404)
-    return make_response(jsonify(city.to_dict()))
+    return jsonify(city.to_dict())
 
 
 @app_views.route("/cities/<city_id>", methods=["DELETE"],
@@ -36,7 +36,7 @@ def delete_city(city_id):
         abort(404)
     city.delete()
     storage.save()
-    return make_response(jsonify({}))
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route("/states/<state_id>/cities", methods=["POST"],
