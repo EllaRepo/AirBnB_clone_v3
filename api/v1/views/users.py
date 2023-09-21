@@ -4,7 +4,6 @@ from models import storage
 from models.user import User
 from api.v1.views import app_views
 from flask import jsonify, abort, request
-from flasgger.utils import swag_from
 
 
 @app_views.route('/users', methods=['GET'],
