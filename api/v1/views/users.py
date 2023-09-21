@@ -51,7 +51,7 @@ def insert_user():
         abort(400, description="Missing email")
     if not data.get("password"):
         abort(400, description="Missing password")
-    new_user = City(**props)
+    new_user = City(**data)
     new_user.save()
     return make_response(jsonify(new_user.to_dict()), 201)
 
@@ -66,7 +66,7 @@ def update_user(user_id):
     data = request.get_json()
     if type(data) != dict:
         abort(400, description="Not a JSON")
-    for key, value in props.items():
+    for key, value in data.items():
         if key not in ["id", "email", "created_at", "updated_at"]:
             setattr(user, key, value)
     storage.save()
