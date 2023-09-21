@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """Implementation of RESTful api for users"""
 from api.v1.views import app_views
-from models.state import State
-from models.city import City
+from models.user import User
 from flask import request, jsonify, abort, make_response
 from models import storage
 
