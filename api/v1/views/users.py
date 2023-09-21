@@ -11,7 +11,7 @@ from models import storage
                  strict_slashes=False)
 def users():
     """return all users """
-    users = storage.all(User)
+    users = storage.all(User).values()
     if users is None:
         abort(404)
     return jsonify([user.to_dict() for user in users])
