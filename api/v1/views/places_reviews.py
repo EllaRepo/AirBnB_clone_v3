@@ -69,15 +69,15 @@ def insert_review(place_id):
                  strict_slashes=False)
 def update_review(review_id):
     """update review based on given review_id"""
+    ignored_list = ["id", "user_id", "place_id", "created_at", "updated_at"]
     review = storage.get("Review", review_id)
     if review is None:
         abort(404)
     data = request.get_json()
     if type(data) != dict:
-        return abort(400, {'message': 'Not a JSON'})
-    for key, value in res.items():
-        if key not in ["id", "user_id", "place_id",
-                       "created_at", "updated_at"]:
+        abort(400, description="Not a JSON")
+    for key, value in data.items():
+        if key not in ignored_list:
             setattr(review, key, value)
     storage.save()
     return make_response(jsonify(review.to_dict()), 200)
