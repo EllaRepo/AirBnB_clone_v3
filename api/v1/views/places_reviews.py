@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ RESTful api for places review """
-from flask import jsonify, abort, request
+from flask import jsonify, abort, request, make_response
 from models import storage
 from api.v1.views import app_views
 from models.review import Review
