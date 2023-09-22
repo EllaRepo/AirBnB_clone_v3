@@ -49,15 +49,15 @@ def insert_review(place_id):
         abort(404)
     data = request.get_json()
     if type(data) != dict:
-        abort(400, description="Not a JSON")
+        return abort(400, {'message': 'Not a JSON'})
     if not data.get("user_id"):
-        abort(400, description="Missing user_id")
+        return abort(400, {'message': 'Missing user_id'})
     data['place_id'] = place_id
     user = storage.get("User", data.get('user_id'))
     if user is None:
         abort(404)
     if not data.get("text"):
-        abort(400, description="Missing text")
+        return abort(400, {'message': 'text'})
     new_review = Review(**data)
     new_review.place_id = place_id
     new_review.save()
@@ -73,7 +73,7 @@ def update_review(review_id):
         abort(404)
     data = request.get_json()
     if type(data) != dict:
-        abort(400, description="Not a JSON")
+        return abort(400, {'message': 'Not a JSON'})
     for key, value in res.items():
         if key not in ["id", "user_id", "place_id",
                        "created_at", "updated_at"]:
