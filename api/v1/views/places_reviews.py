@@ -12,7 +12,7 @@ from models.user import User
                  strict_slashes=False)
 def review_by_place(place_id):
     """ retrive review based on place_id """
-    place = storage.get(Place, place_id)
+    place = storage.get("Place", place_id)
     if place is None:
         abort(404)
     return jsonify([review.to_dict() for review in place.reviews])
