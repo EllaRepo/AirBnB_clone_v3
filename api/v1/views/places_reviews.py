@@ -45,19 +45,20 @@ def delete_review(review_id):
 def insert_review(place_id):
     """ create review for a given place_id """
     place = storage.get("Place", place_id)
+    data = request.get_json()
     if place is None:
         abort(404)
-    data = request.get_json()
     if type(data) != dict:
         return abort(400, {'message': 'Not a JSON'})
-    if not data.get("user_id"):
+    if 'user_id' not in data:
         return abort(400, {'message': 'Missing user_id'})
     data['place_id'] = place_id
     user = storage.get("User", data.get('user_id'))
     if user is None:
         abort(404)
-    if not data.get("text"):
+    if 'text' not in data:
         return abort(400, {'message': 'text'})
+
     new_review = Review(**data)
     new_review.place_id = place_id
     new_review.save()
