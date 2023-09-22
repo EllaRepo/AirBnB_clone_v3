@@ -68,7 +68,7 @@ def insert_review(place_id):
 @app_views.route("/reviews/<review_id>", methods=["PUT"],
                  strict_slashes=False)
 def update_review(review_id):
-    """update review based on given review_id"""
+    """update review table based on given review_id"""
     ignored_list = ["id", "user_id", "place_id", "created_at", "updated_at"]
     review = storage.get("Review", review_id)
     if review is None:
