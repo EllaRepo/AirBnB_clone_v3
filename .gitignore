@@ -1,8 +1,0 @@
-__pycache__
-models/__pycache__
-models/engine/__pycache__
-tests/__pycache__
-tests/test_models/
-tests/test_models/test_engine/
-.gitignore
-file.json
