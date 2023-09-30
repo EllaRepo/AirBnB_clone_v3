@@ -60,6 +60,6 @@ def put_state(state_id):
                 if k != "id" and k != "created_at" and k != "updated_at":
                     setattr(state, k, v)
             storage.save()
-            return make_response(jsonify(state.to_dict(), 200))
+            return make_response(jsonify(state.to_dict()), 200)
         abort(400, "Not a JSON")
     abort(404)
