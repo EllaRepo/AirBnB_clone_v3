@@ -90,7 +90,7 @@ def post_place_search():
     """retrieves all Place objects depending of the JSON in the body of
     the request"""
     body = request.get_json()
-    if not body:
+    if body is None:
         abort(400, "Not a JSON")
 
     if not body or (not body.get('states') and
