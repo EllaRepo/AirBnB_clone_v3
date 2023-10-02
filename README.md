@@ -62,7 +62,8 @@ Classes inherited from Base Model:
 * `def reload(self)` -  deserializes the JSON file to __objects
 * `def delete(self)` -  deletes obj from __objects
 * `def close(self)` -  deserializing the JSON file to objects
-* `def get(self, cls, id)` - returns he object based on <class name > and <id> 
+* `def get(self, cls, id)` - returns the object based on <class name > and <id>
+* `def count(self, cls)` - returns the count of objects with <class name >
 
 #### `/tests` directory contains all unit test cases for this project:
 [/test_models/test_base_model.py](/tests/test_models/test_base_model.py) - Contains the TestBaseModel and TestBaseModelDocs classes
