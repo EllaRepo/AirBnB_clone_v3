@@ -6,6 +6,9 @@ from models.place import Place
 from models.city import City
 from flask import request, jsonify, abort, make_response
 from models import storage
+import requests
+import json
+from os import getenv
 
 
 @app_views.route("/cities/<city_id>/places", methods=['GET'],
@@ -79,3 +82,68 @@ def put_place(place_id):
             return make_response(jsonify(place.to_dict()), 200)
         abort(400, "Not a JSON")
     abort(404)
+
+
+@app_views.route("/places_search", methods=['POST'],
+                 strict_slashes=False)
+def post_place_search():
+    """retrieves all Place objects depending of the JSON in the body of
+    the request"""
+    body = request.get_json()
+    if not body:
+        abort(400, "Not a JSON")
+
+    if not body or (not body.get('states') and
+                    not body.get('cities') and
+                    not body.get('amenities')):
+        places = storage.all(Place)
+        return jsonify([place.to_dict() for place in places.values()])
+
+    places = []
+
+    if body.get('states'):
+        states = [storage.get("State", id) for id in body.get('states')]
+        for state in states:
+            for city in state.cities:
+                for place in city.places:
+                    if place not in places:
+                        places.append(place)
+
+    if body.get('cities'):
+        cities = [storage.get("City", id) for id in body.get('cities')]
+        for city in cities:
+            for place in city.places:
+                if place not in places:
+                    places.append(place)
+
+    if not places:
+        places = storage.all(Place)
+        places = [place for place in places.values()]
+
+    if body.get('amenities'):
+        amens = [storage.get("Amenity", id) for id in body.get('amenities')]
+
+        HBNB_API_HOST = getenv('HBNB_API_HOST')
+        HBNB_API_PORT = getenv('HBNB_API_PORT')
+
+        host = '0.0.0.0' if not HBNB_API_HOST else HBNB_API_HOST
+        port = 5000 if not HBNB_API_PORT else HBNB_API_PORT
+        url = "http://{}:{}/api/v1/places/".format(host, port)
+
+        sz = len(places)
+        i = 0
+        while i < sz:
+            place = places[i]
+            req = url + place.id + "/amenities"
+            resp = requests.get(req)
+            resp_j = json.loads(resp.text)
+            amn_objs = [storage.get("Amenity", amn['id']) for amn in resp_j]
+            for amenity in amens:
+                if amenity not in amn_objs:
+                    places.pop(i)
+                    i -= 1
+                    sz -= 1
+                    break
+            i += 1
+
+    return jsonify([place.to_dict() for place in places])
