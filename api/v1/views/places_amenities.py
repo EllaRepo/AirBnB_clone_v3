@@ -4,7 +4,7 @@ that handles all default RESTFul API actions"""
 from api.v1.views import app_views
 from models.place import Place
 from models.amenity import Amenity
-from flask import request, jsonify, abort, make_response
+from flask import jsonify, abort, make_response
 from models import storage
 from os import getenv
 
