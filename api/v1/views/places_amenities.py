@@ -13,14 +13,14 @@ from flask import jsonify, abort, make_response
 def amenities_from_place(place_id):
     """Return amenities based on provided place_id"""
     place = storage.get("Place", place_id)
-    if not place:
-        abort(404)
-    if getenv("HBNB_TYPE_STORAGE") == "db":
-        return jsonify([amenity.to_dict() for amenity in place.amenities])
-    else:
-        return jsonify([
-            storage.get("Amenity", _id).to_dict() for _id in place.amenity_ids
-        ])
+    if place:
+        if getenv("HBNB_TYPE_STORAGE") == "db":
+            amenities = [amenity.to_dict() for amenity in place.amenities]
+        else:
+            amenities = [storage.get("Amenity", id).to_dict() for id in
+                         place.amenity_ids]
+        return jsonify(amenities)
+    abort(404)
 
 
 @app_views.route("/places/<place_id>/amenities/<amenity_id>",
@@ -41,6 +41,8 @@ def delete_amenity_from_place(place_id, amenity_id):
     else:
         if amenity_id not in place.amenity_ids:
             abort(404)
+        index = place.amenity_ids.index(amenity_id)
+        place.amenity_ids.pop(index)
 
     amenity.delete()
     storage.save()
