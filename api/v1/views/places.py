@@ -4,6 +4,9 @@ actions"""
 from api.v1.views import app_views
 from models.place import Place
 from models.city import City
+from models.state import State
+from models.amenity import Amenity
+from models.user import User
 from flask import request, jsonify, abort, make_response
 from models import storage
 import requests
@@ -15,7 +18,7 @@ from os import getenv
                  strict_slashes=False)
 def get_places(city_id):
     """Retrieves the list of all Place objects"""
-    city = storage.get("City", city_id)
+    city = storage.get(City, city_id)
     if city:
         return jsonify([place.to_dict() for place in city.places])
     abort(404)
@@ -25,7 +28,7 @@ def get_places(city_id):
                  strict_slashes=False)
 def get_place_with_id(place_id):
     """Retrieves place object with place_id"""
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     if place:
         return jsonify(place.to_dict())
     abort(404)
@@ -35,7 +38,7 @@ def get_place_with_id(place_id):
                  strict_slashes=False)
 def delete_place(place_id):
     """Deletes place object with amenity_id"""
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     if place:
         place.delete()
         storage.save()
@@ -47,7 +50,7 @@ def delete_place(place_id):
                  strict_slashes=False)
 def post_place(city_id):
     """Creates a Place"""
-    city = storage.get("City", city_id)
+    city = storage.get(City, city_id)
     if not city:
         abort(404)
     body = request.get_json()
@@ -55,7 +58,7 @@ def post_place(city_id):
         abort(400, "Not a JSON")
     if "user_id" not in body:
         abort(400, "Missing user_id")
-    if not storage.get("User", body["user_id"]):
+    if not storage.get(User, body["user_id"]):
         abort(404)
     if "name" not in body:
         abort(400, "Missing name")
@@ -70,7 +73,7 @@ def post_place(city_id):
                  strict_slashes=False)
 def put_place(place_id):
     """Updates Place object"""
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     if place:
         u_place = request.get_json()
         if u_place:
@@ -102,7 +105,7 @@ def post_place_search():
     places = []
 
     if body.get('states'):
-        states = [storage.get("State", id) for id in body.get('states')]
+        states = [storage.get(State, id) for id in body.get('states')]
         for state in states:
             for city in state.cities:
                 for place in city.places:
@@ -110,7 +113,7 @@ def post_place_search():
                         places.append(place)
 
     if body.get('cities'):
-        cities = [storage.get("City", id) for id in body.get('cities')]
+        cities = [storage.get(City, id) for id in body.get('cities')]
         for city in cities:
             for place in city.places:
                 if place not in places:
@@ -121,7 +124,7 @@ def post_place_search():
         places = [place for place in places.values()]
 
     if body.get('amenities'):
-        amens = [storage.get("Amenity", id) for id in body.get('amenities')]
+        amens = [storage.get(Amenity, id) for id in body.get('amenities')]
 
         HBNB_API_HOST = getenv('HBNB_API_HOST')
         HBNB_API_PORT = getenv('HBNB_API_PORT')
@@ -137,7 +140,7 @@ def post_place_search():
             req = url + place.id + "/amenities"
             resp = requests.get(req)
             resp_j = json.loads(resp.text)
-            amn_objs = [storage.get("Amenity", amn['id']) for amn in resp_j]
+            amn_objs = [storage.get(Amenity, amn['id']) for amn in resp_j]
             for amenity in amens:
                 if amenity not in amn_objs:
                     places.pop(i)
