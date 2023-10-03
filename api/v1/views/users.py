@@ -20,7 +20,7 @@ def users():
                  strict_slashes=False)
 def user_by_id(user_id):
     """Return users based on user_id"""
-    res = storage.get("User", user_id)
+    res = storage.get(User, user_id)
     if res is None:
         abort(404)
     return jsonify(res.to_dict())
@@ -30,7 +30,7 @@ def user_by_id(user_id):
                  strict_slashes=False)
 def delete_user(user_id):
     """delete user based on provided user_id"""
-    user = storage.get("User", user_id)
+    user = storage.get(User, user_id)
     if user is None:
         abort(404)
     user.delete()
@@ -58,7 +58,7 @@ def insert_user():
                  strict_slashes=False)
 def update_user_by_id(user_id):
     """update city based on given city_id"""
-    user = storage.get("User", user_id)
+    user = storage.get(User, user_id)
     if user is None:
         abort(404)
     data = request.get_json()
