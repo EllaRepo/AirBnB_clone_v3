@@ -85,7 +85,7 @@ class FileStorage:
         if cls:
             count = 0
             for obj in self.__objects.values():
-                if obj.__class__.__name__ == cls:
+                if obj.__class__.__name__ == cls.__name__:
                     count += 1
             return count
         else:
