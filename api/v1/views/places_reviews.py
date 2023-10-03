@@ -12,7 +12,7 @@ from models.user import User
                  strict_slashes=False)
 def review_by_place(place_id):
     """ retrive review based on place_id """
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     if place is None:
         abort(404)
     return jsonify([review.to_dict() for review in place.reviews])
@@ -22,7 +22,7 @@ def review_by_place(place_id):
                  strict_slashes=False)
 def show_review(review_id):
     """ retrive review based on provided review_id """
-    review = storage.get("Review", review_id)
+    review = storage.get(Review, review_id)
     if review is None:
         abort(404)
     return jsonify(review.to_dict())
@@ -32,7 +32,7 @@ def show_review(review_id):
                  strict_slashes=False)
 def delete_review(review_id):
     """delete reive basese on provided review_id"""
-    review = storage.get("Review", review_id)
+    review = storage.get(Review, review_id)
     if review is None:
         abort(404)
     review.delete()
@@ -44,7 +44,7 @@ def delete_review(review_id):
                  strict_slashes=False)
 def insert_review(place_id):
     """ create review for a given place_id """
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     data = request.get_json()
     if place is None:
         abort(404)
@@ -53,7 +53,7 @@ def insert_review(place_id):
     if 'user_id' not in data:
         return abort(400, {'message': 'Missing user_id'})
     data['place_id'] = place_id
-    user = storage.get("User", data.get('user_id'))
+    user = storage.get(User, data.get('user_id'))
     if user is None:
         abort(404)
     if 'text' not in data:
@@ -70,7 +70,7 @@ def insert_review(place_id):
 def update_review(review_id):
     """update review table based on given review_id"""
     ignored_list = ["id", "user_id", "place_id", "created_at", "updated_at"]
-    review = storage.get("Review", review_id)
+    review = storage.get(Review, review_id)
     if review is None:
         abort(404)
     data = request.get_json()
