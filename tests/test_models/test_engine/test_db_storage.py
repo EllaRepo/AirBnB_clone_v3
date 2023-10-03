@@ -92,7 +92,7 @@ class TestFileStorage(unittest.TestCase):
         """ Tests a method to retrieve one object"""
         user = User(name="User_one", email="ella@gmail.com", password="123")
         user.save()
-        self.assertEqual(models.storage.get("User", user.id), user)
+        self.assertEqual(models.storage.get(User, user.id), user)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing file storage")
     def test_count(self):
