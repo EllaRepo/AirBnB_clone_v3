@@ -14,7 +14,7 @@ from os import getenv
 def get_places_amenities(place_id):
     """Retrieves the list of all all Amenity objects of a Place"""
     place = storage.get(Place, place_id)
-    if place_id:
+    if place:
         if getenv('HBNB_TYPE_STORAGE') == 'db':
             ams = [amenity.to_dict() for amenity in place.amenities]
         else:
