@@ -13,12 +13,12 @@ from os import getenv
                  strict_slashes=False)
 def get_places_amenities(place_id):
     """Retrieves the list of all all Amenity objects of a Place"""
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     if place_id:
         if getenv('HBNB_TYPE_STORAGE') == 'db':
             ams = [amenity.to_dict() for amenity in place.amenities]
         else:
-            ams = [storage.get("Amenity", id).to_dict() for id in
+            ams = [storage.get(Amenity, id).to_dict() for id in
                    place.amenity_ids]
         return jsonify(ams)
     abort(404)
@@ -28,9 +28,9 @@ def get_places_amenities(place_id):
                  methods=['DELETE'], strict_slashes=False)
 def delete_place_amenity(place_id, amenity_id):
     """Deletes Amenity object to a Place"""
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     if place:
-        amenity = storage.get("Amenity", amenity_id)
+        amenity = storage.get(Amenity, amenity_id)
         if amenity:
             if getenv('HBNB_TYPE_STORAGE') == 'db':
                 if amenity not in place.amenities:
@@ -51,9 +51,9 @@ def delete_place_amenity(place_id, amenity_id):
                  strict_slashes=False)
 def link_amenity_place(place_id, amenity_id):
     """Link a Amenity object to a Place"""
-    place = storage.get("Place", place_id)
+    place = storage.get(Place, place_id)
     if place:
-        amenity = storage.get("Amenity", amenity_id)
+        amenity = storage.get(Amenity, amenity_id)
         if amenity:
             if getenv('HBNB_TYPE_STORAGE') == 'db':
                 if amenity in place.amenities:
